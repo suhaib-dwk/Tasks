@@ -13,8 +13,7 @@ class TaskRequest extends FormRequest
             'title' => 'string|max:255',
             'description' => 'required|string',
             'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'user_id' => 'required|exists:users,id',
+            'end_date' => 'required|date|after_or_equal:start_date',
         ];
     }
 }

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,14 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 
 
-Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // Route::middleware('admin')->group(function () {
@@ -38,5 +40,18 @@ Route::middleware('admin')->group(function () {
     Route::get('/admin/component/create-task', [TaskController::class, 'create'])
         ->name('admin.component.createTask');
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+
+    Route::get('/admin/component/create-user', [UserController::class, 'create'])
+        ->name('admin.component.createUser');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::post('/submit-task', [TaskController::class, 'submitTask'])->name('submit.task');
+
+
     Route::get('/export/tasks/excel', [TaskController::class, 'exportToExcel'])->name('export.tasks.excel');
+});
+
+Route::middleware('employee')->group(function () {
+    Route::get('/home', [ClientController::class, 'index'])->name('home');
 });

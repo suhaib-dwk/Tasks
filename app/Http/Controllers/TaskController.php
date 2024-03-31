@@ -14,7 +14,7 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = Task::with('users')->get();
         $users = User::where('role', 'Employee')->get();
         return view('admin.dashboard', compact('tasks', 'users'));
     }
@@ -29,26 +29,46 @@ class TaskController extends Controller
     {
         $validatedData = $request->validated();
 
-        Task::create($validatedData);
+        $task = Task::create($validatedData);
+        $task->users()->attach($request->user_id);
 
         return redirect()->route('dashboard')->with('success', 'Task added successfully!');
     }
 
-
-
     public function destroy($id)
     {
         $task = Task::findOrFail($id);
+        $task->users()->detach();
         $task->delete();
         return redirect()->back()->with('success', 'Task deleted successfully.');
     }
 
-    public function update(Request $request, $id)
+    public function update(TaskRequest $request, $id)
     {
         $task = Task::findOrFail($id);
-        $task->update($request->all());
+        $validatedData = $request->validated();
+
+        $task->update($validatedData);
+        $task->users()->sync($request->user_ids);
+
         return redirect()->back()->with('success', 'Task updated successfully.');
     }
+
+    public function submitTask(Request $request)
+{
+    $request->validate([
+        'task_id' => 'required|exists:tasks,id',
+    ]);
+
+    $user = auth()->user();
+
+    $task = Task::find($request->task_id);
+
+    $user->tasks()->updateExistingPivot($task, ['submit' => 1]);
+
+    return response()->json(['message' => 'Task submitted successfully']);
+}
+
     public function exportToExcel()
     {
         return Excel::download(new TasksExport, 'tasks.xlsx');

@@ -11,7 +11,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Task fields, pre-filled with current values -->
                     <div class="form-group">
                         <label>Title</label>
                         <input type="text" name="title" class="form-control" value="{{ $task->title }}" required>
@@ -45,6 +44,7 @@
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
+
 
             </form>
         </div>

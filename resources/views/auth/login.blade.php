@@ -15,7 +15,7 @@
             <div class="col-md-6">
                 <div class="card my-5">
                     <div class="card-body">
-                        <h3 class="card-title text-center mb-4">Admin Login</h3>
+                        <h3 class="card-title text-center mb-4">Login Page</h3>
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="form-group">

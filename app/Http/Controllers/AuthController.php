@@ -28,7 +28,11 @@ class AuthController extends Controller
                 return redirect()->intended('dashboard');
             }
 
-            return redirect()->intended('home');
+            if (Auth::user()->role === 'Employee') {
+                return redirect()->intended('home');
+            }
+
+            return redirect()->intended('/login');
         }
 
         return back()->withErrors([
@@ -44,6 +48,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

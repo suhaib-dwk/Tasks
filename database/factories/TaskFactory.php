@@ -18,7 +18,6 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
             'start_date' => $this->faker->dateTimeBetween('-1 week', '+1 week'),

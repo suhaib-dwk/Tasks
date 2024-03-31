@@ -20,6 +20,10 @@ class UserIsAdmin
             return $next($request);
         }
 
+        if (Auth::user() && Auth::user()->role === 'Employee') {
+            return $next($request);
+        }
+
         return redirect('/');
     }
 }
