@@ -30,14 +30,15 @@
 
                     <div class="form-group">
                         <label>Employee Name</label>
-                        <select name="user_id" class="form-control" required>
+                        <select class="form-control" id="user_id" name="user_ids[]" multiple required>
                             @foreach ($users as $user)
-                            <option value="{{ $user->id }}" {{ $task->user_id == $user->id ? 'selected' : '' }}>
+                            <option value="{{ $user->id }}" {{ $task->users->contains($user->id) ? 'selected' : '' }}>
                                 {{ $user->name }}
                             </option>
                             @endforeach
                         </select>
                     </div>
+
 
                 </div>
                 <div class="modal-footer">

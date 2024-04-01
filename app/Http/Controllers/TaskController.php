@@ -44,15 +44,18 @@ class TaskController extends Controller
     }
 
     public function update(TaskRequest $request, $id)
-    {
-        $task = Task::findOrFail($id);
-        $validatedData = $request->validated();
+{
+    $task = Task::findOrFail($id);
+    $validatedData = $request->validated();
 
-        $task->update($validatedData);
-        $task->users()->sync($request->user_ids);
+    $task->update($validatedData);
 
-        return redirect()->back()->with('success', 'Task updated successfully.');
-    }
+    // Sync the assigned users
+    $task->users()->sync($request->input('user_ids', []));
+
+    return redirect()->back()->with('success', 'Task updated successfully.');
+}
+
 
     public function submitTask(Request $request)
 {

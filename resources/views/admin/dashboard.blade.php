@@ -5,6 +5,64 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        .sidebar {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 75px;
+            left: 20px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 10px 20px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-link.active {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        .logout-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+        }
+
+        .status-text {
+            width: 62px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
         .alert-container {
             position: fixed;
             top: 20px;
@@ -12,26 +70,17 @@
             z-index: 1000;
         }
 
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 250px;
-            background-color: #f8f9fa;
-            padding-top: 70px;
+        .sign-style{
+            padding-right: 10px; margin-right: 5px; display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    justify-content: center;
+    border-radius: 46%;
+    color: white;
+    align-content: center;
+    align-items: center;
         }
 
-        .sidebar a {
-            padding: 10px 20px;
-            display: block;
-            color: #000;
-            text-decoration: none;
-        }
-
-        .sidebar a:hover {
-            background-color: #e9ecef;
-        }
 
         .content {
             margin-left: 250px;
@@ -67,16 +116,13 @@
 
             document.querySelector('a[href="#tasks"][onclick="toggleSection(\'' + sectionId + '\')"]').classList.add('active');
         }
-
-
     </script>
 </head>
 
 <body>
-    <!-- Navbar
-    -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Dashboard</a>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#"></a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
@@ -92,7 +138,7 @@
 
         <form id="logout-form" action="{{ route('logout') }}" method="POST">
             @csrf
-            <a href="#" onclick="document.getElementById('logout-form').submit()">Logout</a>
+            <button type="submit" class="logout-btn">Logout</button>
         </form>
     </div>
 

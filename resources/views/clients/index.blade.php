@@ -77,13 +77,14 @@
                         <td>{{ $task->start_date }}</td>
                         <td>{{ $task->end_date }}</td>
                         <td>
-                        <form id="submissionForm{{ $task->id }}" action="{{ route('submit.task') }}" method="POST">
-    @csrf
-    <input type="hidden" name="task_id" value="{{ $task->id }}">
-    <button type="submit" class="btn btn-danger" id="submitBtn{{ $task->id }}">Submission</button>
-</form>
+                            <form id="submissionForm{{ $task->id }}" action="{{ route('submit.task') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                <button type="submit" class="btn btn-danger" id="submitBtn{{ $task->id }}">Submission</button>
+                            </form>
 
                         </td>
+
                     </tr>
                     @endforeach
                 </tbody>
@@ -94,33 +95,52 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
-    $(document).ready(function () {
-        $('form').submit(function (event) {
-            event.preventDefault();
+        $(document).ready(function() {
+            $('form').each(function() {
+                var form = $(this);
+                var taskId = form.find('input[name="task_id"]').val();
+                var submitBtn = form.find('button[type="submit"]');
 
-            var form = $(this);
-            var formData = form.serialize();
-            var submitBtn = form.find('button[type="submit"]');
+                $.ajax({
+                    type: 'GET',
+                    url: '/check-submission/' + taskId,
+                    success: function(response) {
+                        if (response.submitted) {
+                            submitBtn.removeClass('btn-danger').addClass('btn-success').text('Submitted').prop('disabled', true);
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
 
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: formData,
-                beforeSend: function () {
-                    submitBtn.prop('disabled', true);
-                },
-                success: function (response) {
-                    submitBtn.removeClass('btn-danger').addClass('btn-success').text('Submitted').prop('disabled', true);
-                    alert(response.message);
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                    submitBtn.prop('disabled', false);
-                }
+            $('form').submit(function(event) {
+                event.preventDefault();
+
+                var form = $(this);
+                var formData = form.serialize();
+                var submitBtn = form.find('button[type="submit"]');
+
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: formData,
+                    beforeSend: function() {
+                        submitBtn.prop('disabled', true);
+                    },
+                    success: function(response) {
+                        submitBtn.removeClass('btn-danger').addClass('btn-success').text('Submitted').prop('disabled', true);
+                        alert(response.message);
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                        submitBtn.prop('disabled', false);
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 </body>
 
 </html>

@@ -32,34 +32,36 @@
                     <td>{{ $task->start_date }}</td>
                     <td>{{ $task->end_date }}</td>
                     <td>
-    @foreach ($task->users as $user)
-        @php
-            $submitStatus = $task->users()->wherePivot('submit', 1)->get()->count();
-        @endphp
+                        @foreach ($task->users as $user)
+                        @php
+                        $submitStatus = $task->users()->wherePivot('user_id', $user->id)->wherePivot('submit', 1)->exists();
+                        @endphp
 
-        @if ($submitStatus == 0)
-            <span style="background-color:red; padding-right: 10px; margin-right: 5px;">{{ $user->name }}</span>
-        @else
-            <span style="background-color:green; padding-right: 10px; margin-right: 5px;">{{ $user->name }}</span>
-        @endif
-    @endforeach
-</td>
+                        <span style="background-color: {{ $submitStatus ? 'green' : 'red' }};" class="sign-style">{{ $user->name }}</span>
+                        @endforeach
+                    </td>
                     <td>
                         @php
                         $totalUsers = $task->users->count();
                         $submittedUsers = $task->users()->wherePivot('submit', 1)->count();
                         @endphp
                         @if ($submittedUsers == 0)
-                        Open
+                        <div class="status-text" style="background-color: green;  color:white">
+                            Open
+                        </div>
                         @elseif ($submittedUsers == $totalUsers)
-                        Closed
+                        <div class="status-text" style="background-color: red; color: white;">
+                            Closed
+                        </div>
                         @else
-                        Pending
+                        <div class="status-text " style="background-color: orange; color: black;">
+                            partial
+                        </div>
                         @endif
                     </td>
                     <td class="d-flex justify-content-between">
                         <!-- Edit Button -->
-                        <button class="btn btn-success w-50" data-target="#editTaskModal-{{ $task->id }}" data-toggle="modal">Edit</button>
+                        <button class="btn btn-success w-50" style="margin-right: 9px;" data-target="#editTaskModal-{{ $task->id }}" data-toggle="modal">Edit</button>
 
                         <!-- Delete Button -->
                         <form id="deleteForm{{ $task->id }}" action="{{ route('task.destroy', $task->id) }}" method="POST">
