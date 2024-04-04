@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('task_id');
             $table->boolean('submit')->default(0);
+            $table->timestamp('submitted_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

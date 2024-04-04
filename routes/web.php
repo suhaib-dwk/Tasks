@@ -47,6 +47,9 @@ Route::middleware('admin')->group(function () {
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
     Route::post('/submit-task', [TaskController::class, 'submitTask'])->name('submit.task');
+    Route::get('/check-submission/{taskId}', [TaskController::class, 'checkSubmission']);
+    Route::get('/search/tasks', [TaskController::class, 'search'])->name('search.tasks');
+    Route::get('/task/{id}', [TaskController::class, 'show'])->name('task.show');
 
 
     Route::get('/export/tasks/excel', [TaskController::class, 'exportToExcel'])->name('export.tasks.excel');

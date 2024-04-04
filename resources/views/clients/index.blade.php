@@ -38,6 +38,10 @@
         .table tbody tr:hover {
             background-color: #f2f2f2;
         }
+
+        .btn-success {
+            background-color: green !important;
+        }
     </style>
 </head>
 
@@ -77,14 +81,23 @@
                         <td>{{ $task->start_date }}</td>
                         <td>{{ $task->end_date }}</td>
                         <td>
+                        @foreach ($task->users as $user)
+                        @php
+                        $submitStatus = $task->users()->wherePivot('user_id', $user->id)->wherePivot('submit', 1)->exists();
+                        @endphp
+                                                @endforeach
+
                             <form id="submissionForm{{ $task->id }}" action="{{ route('submit.task') }}" method="POST">
+
                                 @csrf
                                 <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                <button type="submit" class="btn btn-danger" id="submitBtn{{ $task->id }}">Submission</button>
+                                @if ($submitStatus)
+                                    <button type="button" class="btn btn-success" disabled>Submitted</button>
+                                @else
+                                    <button type="submit" class="btn btn-danger">Submission</button>
+                                @endif
                             </form>
-
                         </td>
-
                     </tr>
                     @endforeach
                 </tbody>
@@ -96,16 +109,18 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(document).ready(function() {
+            // Loop through each form
             $('form').each(function() {
                 var form = $(this);
                 var taskId = form.find('input[name="task_id"]').val();
-                var submitBtn = form.find('button[type="submit"]');
 
+                // Check submission status
                 $.ajax({
                     type: 'GET',
                     url: '/check-submission/' + taskId,
                     success: function(response) {
                         if (response.submitted) {
+                            var submitBtn = form.find('button[type="submit"]');
                             submitBtn.removeClass('btn-danger').addClass('btn-success').text('Submitted').prop('disabled', true);
                         }
                     },
@@ -115,26 +130,28 @@
                 });
             });
 
+            // Form submission
             $('form').submit(function(event) {
                 event.preventDefault();
-
                 var form = $(this);
                 var formData = form.serialize();
-                var submitBtn = form.find('button[type="submit"]');
 
                 $.ajax({
                     type: form.attr('method'),
                     url: form.attr('action'),
                     data: formData,
                     beforeSend: function() {
+                        var submitBtn = form.find('button[type="submit"]');
                         submitBtn.prop('disabled', true);
                     },
                     success: function(response) {
+                        var submitBtn = form.find('button[type="submit"]');
                         submitBtn.removeClass('btn-danger').addClass('btn-success').text('Submitted').prop('disabled', true);
                         alert(response.message);
                     },
                     error: function(error) {
                         console.error('Error:', error);
+                        var submitBtn = form.find('button[type="submit"]');
                         submitBtn.prop('disabled', false);
                     }
                 });
